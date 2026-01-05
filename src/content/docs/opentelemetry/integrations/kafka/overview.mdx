@@ -94,12 +94,12 @@ This provides end-to-end visibility from producers through brokers to consumers.
 
 The Java Agent provides [out-of-the-box Kafka instrumentation](https://opentelemetry.io/docs/zero-code/java/spring-boot-starter/out-of-the-box-instrumentation/) with zero code changes. For advanced configuration, see the [Kafka instrumentation documentation](https://github.com/open-telemetry/opentelemetry-java-instrumentation/tree/main/instrumentation/kafka).
 
-## View your data [#view-data]
+## Find your data [#find-data]
 
 Once configured, your Kafka metrics will appear in multiple locations across New Relic:
 
 ### 1. Entity explorer
-* Go to <DNT>**[one.newrelic.com](https://one.newrelic.com) > All Capabilities > On Host Integrations**</DNT>
+* Go to <DNT>**[one.newrelic.com](https://one.newrelic.com) > All capabilities > On host integrations**</DNT>
 * View Kafka broker, cluster, and topics entity types
 
 <img
@@ -109,7 +109,7 @@ Once configured, your Kafka metrics will appear in multiple locations across New
 />
 
 ### 2. Queues & Streams
-* Go to <DNT>**[one.newrelic.com](https://one.newrelic.com) > All Capabilities > Queues & Streams**</DNT>
+* Go to <DNT>**[one.newrelic.com](https://one.newrelic.com) > All capabilities > Queues & Streams**</DNT>
 * Filter by `provider=opentelemetry` and click on the account row where you instrumented Kafka to view your data
 
 <img
@@ -119,7 +119,7 @@ Once configured, your Kafka metrics will appear in multiple locations across New
 />
 
 ### 3. Third-party services
-* Go to <DNT>**[one.newrelic.com](https://one.newrelic.com) > All Capabilities > Infrastructure > Third-party services**</DNT>
+* Go to <DNT>**[one.newrelic.com](https://one.newrelic.com) > All capabilities > Infrastructure > Third-party services**</DNT>
 * Select <DNT>**Kafka (OpenTelemetry)**</DNT> > <DNT>**OTel Kafka Dashboard**</DNT>
 
 <img
@@ -129,7 +129,7 @@ Once configured, your Kafka metrics will appear in multiple locations across New
 />
 
 ### 4. Pre-built dashboards
-* Go to <DNT>**[one.newrelic.com](https://one.newrelic.com) > Dashboards > Recommended Dashboards (View all)**</DNT>
+* Go to <DNT>**[one.newrelic.com](https://one.newrelic.com) > Dashboards > Recommended dashboards (View all)**</DNT>
 * Search for <DNT>**"OTel Kafka Dashboard"**</DNT>
 
 <img
@@ -148,8 +148,6 @@ WHERE kafka.cluster.name = 'production-cluster' AND instrumentation.provider='op
 ```
 
 ## Next steps [#next-steps]
-
-After deploying the OpenTelemetry Collector:
 
 * **[Explore Kafka metrics](/docs/opentelemetry/integrations/kafka/metrics-reference)** - View the complete metrics reference
 * **[Create custom dashboards](/docs/query-your-data/explore-query-data/dashboards/introduction-dashboards)** - Build visualizations for your Kafka data

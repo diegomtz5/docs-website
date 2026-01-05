@@ -58,7 +58,7 @@ Replace `YOUR_LICENSE_KEY` with your actual New Relic license key.
 
 ## Step 3: Deploy OpenTelemetry Collector [#deploy-collector]
 
-### Create JMX Custom Metrics ConfigMap
+### Create JMX custom metrics ConfigMap
 
 First, create a ConfigMap with custom JMX metrics configuration. Save as `jmx-kafka-config.yaml`:
 
@@ -269,7 +269,7 @@ Apply the JMX ConfigMap:
 kubectl apply -f jmx-kafka-config.yaml
 ```
 
-### Create Collector ConfigMap
+### Create collector ConfigMap
 
 Create a ConfigMap with the OpenTelemetry Collector configuration. Save as `otel-kafka-config.yaml`:
 
@@ -319,8 +319,6 @@ data:
               jar_path: /opt/opentelemetry-jmx-scraper.jar
               target_system: kafka
               jmx_configs: /conf-jmx/jmx-kafka-config.yaml
-              username: ${JMX_USERNAME}
-              password: ${JMX_PASSWORD}
               collection_interval: 30s
               # Set dynamic resource attributes from discovered pod
               resource_attributes:
@@ -509,9 +507,51 @@ Apply the ConfigMap:
 kubectl apply -f otel-kafka-config.yaml
 ```
 
-### Deploy the Collector
+### Build custom collector image
 
-Create the Deployment. Save as `otel-collector-deployment.yaml`:
+Create a custom OpenTelemetry Collector image with Java runtime and JMX scraper. Save as `Dockerfile`:
+
+```dockerfile
+# Multi-stage build for OpenTelemetry Collector with Java support for JMX receiver
+# This image bundles the OTEL Collector with Java 17 runtime and JMX scraper JAR
+
+FROM alpine:latest as prep
+
+# OpenTelemetry Collector Binary
+ARG OTEL_VERSION=0.142.0
+ARG TARGETARCH=linux_amd64
+ADD "https://github.com/open-telemetry/opentelemetry-collector-releases/releases/download/v${OTEL_VERSION}/otelcol-contrib_${OTEL_VERSION}_${TARGETARCH}.tar.gz" /otelcontribcol
+RUN tar -zxvf /otelcontribcol
+
+# JMX Scraper JAR (for JMX receiver with YAML-based configuration)
+ARG JMX_SCRAPER_JAR_VERSION=1.49.0
+ADD https://github.com/open-telemetry/opentelemetry-java-contrib/releases/download/v${JMX_SCRAPER_JAR_VERSION}/opentelemetry-jmx-scraper.jar /opt/opentelemetry-jmx-scraper.jar
+
+# Set permissions for nonroot user (uid 65532)
+ARG USER_UID=65532
+RUN chown ${USER_UID} /opt/opentelemetry-jmx-scraper.jar
+
+# Final minimal image with Java runtime
+FROM openjdk:17-jre-slim
+
+COPY --from=prep /opt/opentelemetry-jmx-scraper.jar /opt/opentelemetry-jmx-scraper.jar
+COPY --from=prep /otelcol-contrib /otelcol-contrib
+
+EXPOSE 4317 4318 8888
+ENTRYPOINT ["/otelcol-contrib"]
+CMD ["--config", "/conf/otel-agent-config.yaml"]
+```
+
+Build and push the image:
+
+```bash
+docker build -t your-registry/otel-collector-kafka:latest .
+docker push your-registry/otel-collector-kafka:latest
+```
+
+### Deploy the collector
+
+Create the deployment. Save as `otel-collector-deployment.yaml`:
 
 ```yaml
 apiVersion: apps/v1
@@ -530,50 +570,44 @@ spec:
         app: otel-collector
     spec:
       serviceAccountName: otel-collector
-      initContainers:
-      - name: download-jmx-scraper
-        image: busybox:latest
-        command:
-          - sh
-          - -c
-          - |
-            wget -O /opt/opentelemetry-jmx-metrics.jar \
-              https://github.com/open-telemetry/opentelemetry-java-contrib/releases/download/v1.33.0/opentelemetry-jmx-metrics.jar
-        volumeMounts:
-          - name: jmx-scraper
-            mountPath: /opt
       containers:
       - name: otel-collector
-        image: otel/opentelemetry-collector-contrib:0.95.0
+        image: your-registry/otel-collector-kafka:latest
         env:
           - name: NEW_RELIC_LICENSE_KEY
             valueFrom:
               secretKeyRef:
                 name: nr-license-key
                 key: NEW_RELIC_LICENSE_KEY
-          - name: K8S_NODE_NAME
-            valueFrom:
-              fieldRef:
-                fieldPath: spec.nodeName
+        resources:
+          limits:
+            cpu: "1"
+            memory: "2Gi"
+          requests:
+            cpu: "500m"
+            memory: "1Gi"
         volumeMounts:
-          - name: config
-            mountPath: /etc/otelcol-contrib
-          - name: jmx-scraper
-            mountPath: /opt
-          - name: jmx-config
-            mountPath: /opt/jmx-config
-        ports:
-          - containerPort: 13133  # Health check
-          - containerPort: 4318   # OTLP HTTP receiver
-      volumes:
-        - name: config
-          configMap:
-            name: otel-collector-config
-        - name: jmx-scraper
-          emptyDir: {}
+        - name: vol-kafka-test-cluster
+          mountPath: /conf
         - name: jmx-config
-          configMap:
-            name: jmx-kafka-config
+          mountPath: /conf-jmx
+        ports:
+        - containerPort: 4317  # OTLP gRPC
+        - containerPort: 4318  # OTLP HTTP
+        - containerPort: 8888  # Metrics
+      volumes:
+      - name: vol-kafka-test-cluster
+        configMap:
+          name: otel-collector-config
+          items:
+          - key: otel-collector-config.yaml
+            path: otel-agent-config.yaml
+      - name: jmx-config
+        configMap:
+          name: jmx-kafka-config
+          items:
+          - key: jmx-kafka-config.yaml
+            path: jmx-kafka-config.yaml
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -604,6 +638,9 @@ roleRef:
   apiGroup: rbac.authorization.k8s.io
 ```
 
+**Resource configuration:**
+* The resource limits above are suitable for medium-sized Kafka clusters (5-10 brokers, 20-100 topics)
+
 Apply the deployment:
 
 ```bash
@@ -617,103 +654,99 @@ kubectl get pods -n kafka -l app=otel-collector
 kubectl logs -n kafka -l app=otel-collector -f
 ```
 
-## Step 4: (Optional) Instrument producer/consumer applications [#instrument-apps]
+## Step 4: (Optional) Instrument producer or consumer applications [#instrument-apps]
 
 To collect application-level telemetry from Kafka producer and consumer applications running in Kubernetes, instrument them with the [OpenTelemetry Java Agent](https://opentelemetry.io/docs/zero-code/java/agent/getting-started/).
 
-### Create a Service for the Collector
+### Instrument your Kafka application
 
-First, expose the collector as a service so applications can send data to it:
+To instrument your Kafka producer or consumer applications, add the OpenTelemetry Java Agent to your existing deployment:
 
-```yaml
-apiVersion: v1
-kind: Service
-metadata:
-  name: otel-collector
-  namespace: kafka
-spec:
-  selector:
-    app: otel-collector
-  ports:
-    - name: otlp-http
-      port: 4318
-      targetPort: 4318
-    - name: otlp-grpc
-      port: 4317
-      targetPort: 4317
-```
-
-Apply the service:
-
-```bash
-kubectl apply -f otel-collector-service.yaml
-```
-
-### Instrument Your Kafka Application
-
-Update your Kafka application deployment to include the OpenTelemetry Java Agent:
+1. **Download the Java agent**: Add an init container to download the agent JAR:
 
 ```yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: kafka-producer
-  namespace: kafka
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: kafka-producer
-  template:
-    metadata:
-      labels:
-        app: kafka-producer
-    spec:
-      initContainers:
-      - name: download-otel-agent
-        image: busybox:latest
-        command:
-          - sh
-          - -c
-          - |
-            wget -O /otel/opentelemetry-javaagent.jar \
-              https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/latest/download/opentelemetry-javaagent.jar
-        volumeMounts:
-          - name: otel-agent
-            mountPath: /otel
-      containers:
-      - name: kafka-producer
-        image: your-kafka-producer:latest
-        env:
-          - name: JAVA_TOOL_OPTIONS
-            value: >-
-              -javaagent:/otel/opentelemetry-javaagent.jar
-              -Dotel.service.name=kafka-producer
-              -Dotel.exporter.otlp.endpoint=http://otel-collector.kafka.svc.cluster.local:4318
-              -Dotel.exporter.otlp.headers=api-key=${NEW_RELIC_LICENSE_KEY}
-              -Dotel.metrics.exporter=otlp
-              -Dotel.logs.exporter=otlp
-              -Dotel.instrumentation.kafka.enabled=true
-              -Dotel.instrumentation.kafka.experimental-span-attributes=true
-              -Dotel.instrumentation.kafka.producer-propagation.enabled=true
-          - name: NEW_RELIC_LICENSE_KEY
-            valueFrom:
-              secretKeyRef:
-                name: nr-license-key
-                key: NEW_RELIC_LICENSE_KEY
-        volumeMounts:
-          - name: otel-agent
-            mountPath: /otel
-      volumes:
-        - name: otel-agent
-          emptyDir: {}
+initContainers:
+- name: download-otel-agent
+  image: busybox:latest
+  command:
+    - sh
+    - -c
+    - |
+      wget -O /otel/opentelemetry-javaagent.jar \
+        https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/latest/download/opentelemetry-javaagent.jar
+  volumeMounts:
+    - name: otel-agent
+      mountPath: /otel
 ```
 
-Apply the deployment:
+2. **Configure the Java agent**: Add environment variables to your application container:
 
-```bash
-kubectl apply -f kafka-producer-deployment.yaml
+```yaml
+env:
+  - name: JAVA_TOOL_OPTIONS
+    value: >-
+      -javaagent:/otel/opentelemetry-javaagent.jar
+      -Dotel.service.name="kafka-producer"
+      -Dotel.resource.attributes="kafka.cluster.name=my-cluster"
+      -Dotel.exporter.otlp.endpoint="http://localhost:4317"
+      -Dotel.exporter.otlp.protocol="grpc"
+      -Dotel.metrics.exporter="otlp"
+      -Dotel.traces.exporter="otlp"
+      -Dotel.logs.exporter="otlp"
+      -Dotel.instrumentation.kafka.experimental-span-attributes="true"
+      -Dotel.instrumentation.messaging.experimental.receive-telemetry.enabled="true"
+      -Dotel.instrumentation.kafka.producer-propagation.enabled="true"
+      -Dotel.instrumentation.kafka.enabled="true"
+volumeMounts:
+  - name: otel-agent
+    mountPath: /otel
 ```
+
+3. **Add the volume**: Include the volume definition:
+
+```yaml
+volumes:
+  - name: otel-agent
+    emptyDir: {}
+```
+
+Replace:
+* `kafka-producer` with a unique name for your application
+* `my-cluster` with your Kafka cluster name
+
+<Callout variant="tip">
+  The configuration above sends telemetry to an OpenTelemetry Collector running on localhost:4317. Deploy your own collector with this configuration:
+
+  ```yaml
+  receivers:
+    otlp:
+      protocols:
+        grpc:
+          endpoint: "0.0.0.0:4317"
+
+  exporters:
+    otlp/newrelic:
+      endpoint: https://otlp.nr-data.net:4318
+      headers:
+        api-key: "${NEW_RELIC_LICENSE_KEY}"
+      compression: gzip
+      timeout: 30s
+
+  service:
+    pipelines:
+      traces:
+        receivers: [otlp]
+        exporters: [otlp/newrelic]
+      metrics:
+        receivers: [otlp]
+        exporters: [otlp/newrelic]
+      logs:
+        receivers: [otlp]
+        exporters: [otlp/newrelic]
+  ```
+
+  This allows you to customize processing, add filters, or route to multiple backends. For other endpoint configurations, see [Configure your OTLP endpoint](/docs/opentelemetry/best-practices/opentelemetry-otlp/#configure-endpoint-port-protocol).
+</Callout>
 
 The Java Agent provides [out-of-the-box Kafka instrumentation](https://opentelemetry.io/docs/zero-code/java/spring-boot-starter/out-of-the-box-instrumentation/) with zero code changes, capturing:
 * Request latencies
@@ -723,23 +756,17 @@ The Java Agent provides [out-of-the-box Kafka instrumentation](https://opentelem
 
 For advanced configuration, see the [Kafka instrumentation documentation](https://github.com/open-telemetry/opentelemetry-java-instrumentation/tree/main/instrumentation/kafka).
 
-## Step 5: Verify data in New Relic [#verify]
+## Find your data [#find-data]
 
-After a few minutes, your Kafka metrics should appear in New Relic:
+After a few minutes, your Kafka metrics should appear in New Relic. See [Find your data](/docs/opentelemetry/integrations/kafka/overview/#find-data) for detailed instructions on exploring your Kafka metrics across different views in the New Relic UI.
 
-1. Go to <DNT>**[one.newrelic.com](https://one.newrelic.com) > All Capabilities > Infrastructure > Third-party services**</DNT>
-2. Search for your Kafka cluster name (e.g., `my-kafka-cluster`)
-3. Explore pre-built dashboards and metrics
-
-Query your data with NRQL:
+You can also query your data with NRQL:
 
 ```sql
 FROM Metric SELECT 
-  average(kafka.brokers),
-  sum(kafka.topic.partitions),
-  rate(sum(kafka.topic.messages.in), 1 minute)
+  latest(kafka.brokers),
+  latest(kafka.prod.msg.count)
 WHERE kafka.cluster.name = 'my-kafka-cluster'
-FACET kafka.broker.id
 TIMESERIES
 ```
 
@@ -775,13 +802,11 @@ nc -zv <kafka-broker-pod-ip> 9999
 ### High memory usage
 
 * Reduce the number of monitored topics
-* Increase `collection_interval` in the JMX receiver
+* Increase `collection_interval` in the JMX and kafkametrics receivers
 * Adjust batch processor settings
-* Consider using a DaemonSet for distributed collection across nodes
 
 ## Next steps [#next-steps]
 
-* **[Configure alerts](/docs/alerts-applied-intelligence/new-relic-alerts/get-started/introduction-applied-intelligence)** for critical Kafka metrics
-* **[View metrics reference](/docs/opentelemetry/integrations/kafka/metrics-reference)** for detailed metric definitions
-* **[Build custom dashboards](/docs/query-your-data/explore-query-data/dashboards/introduction-dashboards)** tailored to your Kafka use cases
-* **Scale the collector**: Consider using a DaemonSet or increasing replicas for high-volume clusters
+* **[Explore Kafka metrics](/docs/opentelemetry/integrations/kafka/metrics-reference)** - View the complete metrics reference
+* **[Create custom dashboards](/docs/query-your-data/explore-query-data/dashboards/introduction-dashboards)** - Build visualizations for your Kafka data
+* **[Set up alerts](/docs/opentelemetry/integrations/kafka/metrics-reference/#alerting)** - Monitor critical metrics like consumer lag and under-replicated partitions

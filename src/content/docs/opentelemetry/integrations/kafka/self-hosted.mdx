@@ -23,7 +23,7 @@ Ensure you have:
 
 ## Step 1: Install OpenTelemetry Collector [#install-collector]
 
-Install the OpenTelemetry Collector Contrib on your host system. For detailed installation instructions for your operating system, refer to the [OpenTelemetry Collector installation documentation](https://opentelemetry.io/docs/collector/installation/).
+Download and install the OpenTelemetry Collector Contrib binary for your host operating system from the [OpenTelemetry Collector releases](https://github.com/open-telemetry/opentelemetry-collector-releases/releases/latest).
 
 ## Step 2: Download the JMX scraper [#jmx-scraper]
 
@@ -420,10 +420,10 @@ Replace:
 <Tabs>
   <TabsBar>
     <TabsBarItem id="otel-direct">
-      Direct Execution
+      Direct execution
     </TabsBarItem>
     <TabsBarItem id="otel-systemd">
-      Systemd Service
+      Systemd service
     </TabsBarItem>
   </TabsBar>
 
@@ -478,7 +478,7 @@ Replace:
   </TabsPages>
 </Tabs>
 
-## Step 7: (Optional) Instrument producer/consumer applications [#instrument-apps]
+## Step 7: (Optional) Instrument producer or consumer applications [#instrument-apps]
 
 To collect application-level telemetry from your Kafka producer and consumer applications, use the [OpenTelemetry Java Agent](https://opentelemetry.io/docs/zero-code/java/agent/getting-started/):
 
@@ -495,16 +495,24 @@ curl -L -o ~/otel-java/opentelemetry-javaagent.jar \
 ```bash
 java \
   -javaagent:~/otel-java/opentelemetry-javaagent.jar \
-  -Dotel.service.name=kafka-producer \
+  -Dotel.service.name="kafka-producer-1" \
+  -Dotel.resource.attributes="kafka.cluster.name=my-kafka-cluster" \
   -Dotel.exporter.otlp.endpoint=https://otlp.nr-data.net:4318 \
-  -Dotel.exporter.otlp.headers=api-key=${NEW_RELIC_LICENSE_KEY} \
-  -Dotel.metrics.exporter=otlp \
-  -Dotel.logs.exporter=otlp \
-  -Dotel.instrumentation.kafka.enabled=true \
-  -Dotel.instrumentation.kafka.experimental-span-attributes=true \
-  -Dotel.instrumentation.kafka.producer-propagation.enabled=true \
+  -Dotel.exporter.otlp.protocol="grpc" \
+  -Dotel.metrics.exporter="otlp" \
+  -Dotel.traces.exporter="otlp" \
+  -Dotel.logs.exporter="otlp" \
+  -Dotel.instrumentation.kafka.experimental-span-attributes="true" \
+  -Dotel.instrumentation.messaging.experimental.receive-telemetry.enabled="true" \
+  -Dotel.instrumentation.kafka.producer-propagation.enabled="true" \
+  -Dotel.instrumentation.kafka.enabled="true" \
   -jar your-kafka-application.jar
 ```
+
+Replace:
+* `kafka-producer-1` with a unique name for your producer or consumer application
+* `my-kafka-cluster` with the same cluster name used in your collector configuration
+* `https://otlp.nr-data.net:4318` with your New Relic OTLP endpoint (use `https://otlp.eu01.nr-data.net:4318` for EU region). For other endpoints and configuration options, see [Configure your OTLP endpoint](/docs/opentelemetry/best-practices/opentelemetry-otlp/#configure-endpoint-port-protocol).
 
 The Java Agent provides [out-of-the-box Kafka instrumentation](https://opentelemetry.io/docs/zero-code/java/spring-boot-starter/out-of-the-box-instrumentation/) with zero code changes, capturing:
 * Request latencies
@@ -514,21 +522,16 @@ The Java Agent provides [out-of-the-box Kafka instrumentation](https://opentelem
 
 For advanced configuration, see the [Kafka instrumentation documentation](https://github.com/open-telemetry/opentelemetry-java-instrumentation/tree/main/instrumentation/kafka).
 
-## Step 8: Verify data in New Relic [#verify]
+## Find your data [#find-data]
 
-After a few minutes, your Kafka metrics should appear in New Relic:
+After a few minutes, your Kafka metrics should appear in New Relic. See [Find your data](/docs/opentelemetry/integrations/kafka/overview/#find-data) for detailed instructions on exploring your Kafka metrics across different views in the New Relic UI.
 
-1. Go to <DNT>**[one.newrelic.com](https://one.newrelic.com) > All Capabilities > Infrastructure > Third-party services**</DNT>
-2. Search for your Kafka cluster name
-3. Explore pre-built dashboards and metrics
-
-Query your data with NRQL:
+You can also query your data with NRQL:
 
 ```sql
 FROM Metric SELECT 
-  average(kafka.brokers),
-  average(kafka.topic.partitions),
-  sum(kafka.topic.messages.in)
+  latest(kafka.brokers),
+  latest(kafka.prod.msg.count)
 WHERE kafka.cluster.name = 'my-kafka-cluster'
 TIMESERIES
 ```
@@ -556,6 +559,6 @@ TIMESERIES
 
 ## Next steps [#next-steps]
 
-* **[Configure alerts](/docs/alerts-applied-intelligence/new-relic-alerts/get-started/introduction-applied-intelligence)** for critical metrics like under-replicated partitions or consumer lag
-* **[View metrics reference](/docs/opentelemetry/integrations/kafka/metrics-reference)** for complete metric definitions
-* **[Build custom dashboards](/docs/query-your-data/explore-query-data/dashboards/introduction-dashboards)** for your Kafka monitoring needs
+* **[Explore Kafka metrics](/docs/opentelemetry/integrations/kafka/metrics-reference)** - View the complete metrics reference
+* **[Create custom dashboards](/docs/query-your-data/explore-query-data/dashboards/introduction-dashboards)** - Build visualizations for your Kafka data
+* **[Set up alerts](/docs/opentelemetry/integrations/kafka/metrics-reference/#alerting)** - Monitor critical metrics like consumer lag and under-replicated partitions
