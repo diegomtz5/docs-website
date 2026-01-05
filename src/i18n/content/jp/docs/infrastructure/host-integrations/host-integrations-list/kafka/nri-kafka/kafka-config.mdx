@@ -1,5 +1,5 @@
 ---
-title: Kafkaの統合構成設定
+title: Kafka's integration configuration settings
 tags:
   - Integrations
   - On-host integrations
@@ -7,16 +7,16 @@ tags:
   - Advanced configuration
 metaDescription: Advanced configuration New Relic's Kafka integration.
 freshnessValidatedDate: never
-translationType: machine
 ---
 
-この統合はオープン ソース ソフトウェアです。つまり[、ソース コードを参照して](https://github.com/newrelic/nri-kafka)改善を送信したり、独自のフォークを作成してビルドしたりできます。
+This integration is open source software. That means you can [browse its source code](https://github.com/newrelic/nri-kafka) and send improvements or create your own fork and build it.
 
-## ラベルとカスタム属性 [#labels]
+## Labels and custom attributes [#labels]
 
-環境変数は、 <InlinePopover type="licenseKey"/>などの構成設定を制御するために使用でき、その後、インフラストラクチャエージェントに渡されます。 この機能の使用方法については、 [「インフラストラクチャエージェントの構成」を](/docs/infrastructure/new-relic-infrastructure/configuration/configure-infrastructure-agent#passthrough)参照してください。
+Environment variables can be used to control config settings, such as your <InlinePopover type="licenseKey"/>, and are then passed through to the infrastructure agent. For instructions on how to use this feature, see [Configure the infrastructure agent](/docs/infrastructure/new-relic-infrastructure/configuration/configure-infrastructure-agent#passthrough).
 
-また、ラベルを使ってメトリクスをさらに装飾することもできます。<br/> デフォルトのサンプル・コンフィグ・ファイルにはラベルの例が含まれていますが、必須ではないので、自分の好きなものを削除、変更、または新たに追加することができます。
+You can further decorate your metrics using labels. Labels allow you to add key/value pairs attributes to your metrics which you can then use to query, filter or group your metrics on.<br/>
+Our default sample config file includes examples of labels but, as they are not mandatory, you can remove, modify or add new ones of your choice.
 
 ```yaml
   labels:
@@ -24,35 +24,33 @@ translationType: machine
     role: kafka
 ```
 
-オンホスト統合構成の一般的な構造については、 [構成](/docs/integrations/integrations-sdk/file-specifications/host-integration-configuration-overview) を参照してください。
+For more about the general structure of on-host integration configuration, see the [configuration](/docs/integrations/integrations-sdk/file-specifications/host-integration-configuration-overview).
 
-## 在庫データ [#inventory]
+## Inventory data [#inventory]
 
-Kafka統合は、デフォルト以外のブローカーとトピック構成パラメーターをキャプチャし、ZooKeeperによって報告されたトピックパーティションスキームを収集します。データは、 `config/kafka`ソースの下の[インベントリUIページ](/docs/infrastructure/new-relic-infrastructure/infrastructure-ui-pages/infrastructure-inventory-page-search-your-entire-infrastructure)で入手できます。
+The Kafka integration captures the non-default broker and topic configuration parameters, and collects the topic partition schemes as reported by ZooKeeper. The data is available on the [Inventory UI page](/docs/infrastructure/new-relic-infrastructure/infrastructure-ui-pages/infrastructure-inventory-page-search-your-entire-infrastructure) under the `config/kafka` source.
 
-## KafkaBrokerSampleおよびKafkaTopicSampleコレクションの設定 [#broker-collection]
+## Configure KafkaBrokerSample and KafkaTopicSample collection [#broker-collection]
 
-Kafka インテグレーションはメトリックスとインベントリ情報の両方を収集します。 各コレクションで使用可能な設定を確認するには、以下の<DNT>**Applies To**</DNT>列を確認してください。
-
-'' '' ''
+The Kafka integration collects both Metrics and Inventory information. Check the <DNT>**Applies To**</DNT> column below to see the settings available to each collection:
 
 <table>
   <thead>
     <tr>
       <th style={{ width: "150px" }}>
-        設定
+        Setting
       </th>
 
       <th>
-        説明
+        Description
       </th>
 
       <th>
-        デフォルト
+        Default
       </th>
 
       <th>
-        に適用されます
+        Applies To
       </th>
     </tr>
   </thead>
@@ -66,15 +64,15 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td>
-        モニターするクラスタを一意に識別するためのユーザー定義の名前。 <DNT>**Required**</DNT> 。
+        User-defined name to uniquely identify the cluster being monitored. <DNT>**Required**</DNT>.
       </td>
 
       <td>
-        該当なし
+        N/A
       </td>
 
       <td style={{ "text-align": "center" }}>
-        M / I
+        M/I
       </td>
     </tr>
 
@@ -86,11 +84,11 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td>
-        接続先のKafkaブローカーのバージョンで、最適なAPIバージョンを設定するために使用されます。ブローカーのバージョンと一致するか、それ以下でなければなりません。
+        The version of the Kafka broker you're connecting to, used for setting optimum API versions. It must match -or be lower than- the version from the broker.
 
-        1.0.0より古いバージョンでは、一部の機能が失われている可能性があります。
+        Versions older than 1.0.0 may be missing some features.
 
-        ブローカーのバイナリ名が`kafka_2.12-2.7.0`の場合、使用される Kafka API バージョンは 2.7.0 であり、その前の 2.12 は Scala 言語バージョンであることに注意してください。
+        Note that if the broker binary name is `kafka_2.12-2.7.0`, the Kafka API version to be used is 2.7.0 and the preceding 2.12 is the Scala language version.
       </td>
 
       <td>
@@ -98,9 +96,13 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td style={{ "text-align": "center" }}>
-        M / I
+        M/I
       </td>
     </tr>
+
+    {
+      ' '
+    }
 
     <tr>
       <td>
@@ -110,17 +112,21 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td>
-        ブローカーを発見する方法。オプションは`zookeeper`または`bootstrap`です。
+        the method of discovering brokers. Options are `zookeeper` or `bootstrap`.
       </td>
 
       <td>
-        飼育係
+        zookeeper
       </td>
 
       <td style={{ 'text-align': 'center' }}>
-        M / I
+        M/I
       </td>
     </tr>
+
+    {
+      ' '
+    }
 
     <tr>
       <td>
@@ -130,7 +136,7 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td>
-        メトリックのみの収集を有効にするには、 `true`に設定します。
+        Set to `true` to enable Metrics only collection.
       </td>
 
       <td>
@@ -140,6 +146,10 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       <td style={{ 'text-align': 'center' }}/>
     </tr>
 
+    {
+      ' '
+    }
+
     <tr>
       <td>
         <DNT>
@@ -148,7 +158,7 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td>
-        インベントリのみの収集を有効にするには、 `true`に設定します。
+        Set to `true` to enable Inventory only collection.
       </td>
 
       <td>
@@ -160,29 +170,27 @@ Kafka インテグレーションはメトリックスとインベントリ情�
   </tbody>
 </table>
 
-## Zookeeper の自動検出用引数 [#zookeeper-discovery]
+## Zookeeper autodiscovery arguments [#zookeeper-discovery]
 
-これらは、 `autodiscover_strategy`オプションが`zookeeper`に設定されている場合にのみ関連します。
-
-'' '' '' ''
+These are only relevant when the `autodiscover_strategy` option is set to `zookeeper`.
 
 <table>
   <thead>
     <tr>
       <th style={{ width: "150px" }}>
-        設定
+        Setting
       </th>
 
       <th>
-        説明
+        Description
       </th>
 
       <th>
-        デフォルト
+        Default
       </th>
 
       <th>
-        に適用されます
+        Applies To
       </th>
     </tr>
   </thead>
@@ -196,7 +204,7 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td>
-        接続する必要のあるApache ZooKeeperホストの一覧 (JSON形式)
+        The list of Apache ZooKeeper hosts (in JSON format) that need to be connected.
 
         <DNT>
           **If `CONSUMER_OFFSET` is set to `false` `KafkaBrokerSamples` and `KafkaTopicSamples` will be collected.**
@@ -208,9 +216,13 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td style={{ "text-align": "center" }}>
-        M / I
+        M/I
       </td>
     </tr>
+
+    {
+      ' '
+    }
 
     <tr>
       <td>
@@ -220,17 +232,22 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td>
-        接続に使用されるZooKeeper認証スキーム。現在、サポートされている値は`digest`のみです。省略した場合、認証は使用されません。
+        The ZooKeeper authentication scheme that is used to connect. Currently, the
+        only supported value is `digest`. If omitted, no authentication is used.
       </td>
 
       <td>
-        該当なし
+        N/A
       </td>
 
       <td style={{ 'text-align': 'center' }}>
-        M / I
+        M/I
       </td>
     </tr>
+
+    {
+      ' '
+    }
 
     <tr>
       <td>
@@ -240,17 +257,23 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td>
-        接続に使用されるZooKeeper認証シークレット。`username:password`の形式である必要があります。`zookeeper_auth_scheme`が指定されている場合にのみ必要です。
+        The ZooKeeper authentication secret that is used to connect. Should be of
+        the form `username:password`. Only required if `zookeeper_auth_scheme` is
+        specified.
       </td>
 
       <td>
-        該当なし
+        N/A
       </td>
 
       <td style={{ 'text-align': 'center' }}>
-        M / I
+        M/I
       </td>
     </tr>
+
+    {
+      ' '
+    }
 
     <tr>
       <td>
@@ -260,17 +283,22 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td>
-        Kafka構成が存在するZookeeperノード。デフォルトは`/`です。
+        The Zookeeper node under which the Kafka configuration resides. Defaults to
+        `/`.
       </td>
 
       <td>
-        該当なし
+        N/A
       </td>
 
       <td style={{ 'text-align': 'center' }}>
-        M / I
+        M/I
       </td>
     </tr>
+
+    {
+      ' '
+    }
 
     <tr>
       <td>
@@ -280,45 +308,45 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td>
-        特定のリスナーを使用してブローカーに接続します。 設定されていない場合は、テスト接続に成功した最初のリスナーが使用されます。 サポートされる値は`PLAINTEXT` 、 `SASL_PLAINTEXT` 、 `SSL` 、 `SASL_SSL`です。
+        Use a specific listener to connect to a broker. If unset, the first listener
+        that passes a successful test connection is used. Supported values are
+        `PLAINTEXT`, `SASL_PLAINTEXT`, `SSL`, and `SASL_SSL`.
 
-        **`SASL_*`プロトコルはKerberos（GSSAPI）認証のみをサポートしていることに注意してください。**
+        **Note the `SASL_*` protocols only support Kerberos (GSSAPI) authentication.**
       </td>
 
       <td>
-        該当なし
+        N/A
       </td>
 
       <td style={{ 'text-align': 'center' }}>
-        M / I
+        M/I
       </td>
     </tr>
   </tbody>
 </table>
 
-## ブートストラップ・ブローカー発見用引数 [#bootstrap-discovery]
+## Bootstrap broker discovery arguments [#bootstrap-discovery]
 
-これらは、 `autodiscover_strategy`オプションがに設定されている場合にのみ関連します`bootstrap`
-
-'' '' ''
+These are only relevant when the `autodiscover_strategy` option is set to`bootstrap`
 
 <table>
   <thead>
     <tr>
       <th style={{ width: "150px" }}>
-        設定
+        Setting
       </th>
 
       <th>
-        説明
+        Description
       </th>
 
       <th>
-        デフォルト
+        Default
       </th>
 
       <th>
-        に適用されます
+        Applies To
       </th>
     </tr>
   </thead>
@@ -332,7 +360,7 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td>
-        ブートストラップ・ブローカーのホストです。
+        The host for the bootstrap broker.
 
         <DNT>
           **If `CONSUMER_OFFSET` is set to `false` `KafkaBrokerSamples` and `KafkaTopicSamples` will be collected.**
@@ -340,13 +368,17 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td>
-        該当なし
+        N/A
       </td>
 
       <td style={{ "text-align": "center" }}>
-        M / I
+        M/I
       </td>
     </tr>
+
+    {
+      ' '
+    }
 
     <tr>
       <td>
@@ -356,15 +388,15 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td>
-        ブートストラップ・ブローカーのKafkaポートです。
+        The Kafka port for the bootstrap broker.
       </td>
 
       <td>
-        該当なし
+        N/A
       </td>
 
       <td style={{ 'text-align': 'center' }}>
-        M / I
+        M/I
       </td>
     </tr>
 
@@ -376,9 +408,9 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td>
-        ブートストラップブローカーへの接続に使用するプロトコル。サポートされている値は、 `PLAINTEXT` 、 `SASL_PLAINTEXT` 、 `SSL` 、および`SASL_SSL`です。
+        The protocol to use to connect to the bootstrap broker. Supported values are `PLAINTEXT`, `SASL_PLAINTEXT`, `SSL`, and `SASL_SSL`.
 
-        **`SASL_*`プロトコルはKerberos（GSSAPI）認証のみをサポートしていることに注意してください。**
+        **Note the `SASL_*` protocols only support Kerberos (GSSAPI) authentication.**
       </td>
 
       <td>
@@ -386,7 +418,7 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td style={{ "text-align": "center" }}>
-        M / I
+        M/I
       </td>
     </tr>
 
@@ -398,7 +430,7 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td>
-        クラスター内の各ブローカの収集に使用するJMXポートです。
+        The JMX port to use for collection on each broker in the cluster.
 
         <DNT>
           **Note that all discovered brokers should have JMX active on this port**
@@ -406,13 +438,17 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td>
-        該当なし
+        N/A
       </td>
 
       <td style={{ "text-align": "center" }}>
-        M / I
+        M/I
       </td>
     </tr>
+
+    {
+      ' '
+    }
 
     <tr>
       <td>
@@ -422,17 +458,21 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td>
-        クラスタ内の各ブローカの収集に使用するJMXユーザ。
+        The JMX user to use for collection on each broker in the cluster.
       </td>
 
       <td>
-        該当なし
+        N/A
       </td>
 
       <td style={{ 'text-align': 'center' }}>
-        M / I
+        M/I
       </td>
     </tr>
+
+    {
+      ' '
+    }
 
     <tr>
       <td>
@@ -442,43 +482,41 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td>
-        クラスター内の各ブローカの収集に使用するJMXパスワードです。
+        The JMX password to use for collection on each broker in the cluster.
       </td>
 
       <td>
-        該当なし
+        N/A
       </td>
 
       <td style={{ 'text-align': 'center' }}>
-        M / I
+        M/I
       </td>
     </tr>
   </tbody>
 </table>
 
-## JMXのオプション [#jmx]
+## JMX options [#jmx]
 
-これらのオプションは、インスタンス上のすべてのJMX接続に適用されます。
-
-'' '' '' '' '' ''
+These options apply to all JMX connections on the instance.
 
 <table>
   <thead>
     <tr>
       <th style={{ width: "150px" }}>
-        設定
+        Setting
       </th>
 
       <th>
-        説明
+        Description
       </th>
 
       <th>
-        デフォルト
+        Default
       </th>
 
       <th>
-        に適用されます
+        Applies To
       </th>
     </tr>
   </thead>
@@ -492,17 +530,21 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td>
-        JMXクライアントのSSL証明書を含むキーストアのファイルパスです。
+        The filepath of the keystore containing the JMX client's SSL certificate.
       </td>
 
       <td>
-        該当なし
+        N/A
       </td>
 
       <td style={{ "text-align": "center" }}>
-        M / I
+        M/I
       </td>
     </tr>
+
+    {
+      ' '
+    }
 
     <tr>
       <td>
@@ -512,17 +554,21 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td>
-        JMXのSSLキーストアのパスワードです。
+        The password for the JMX SSL key store.
       </td>
 
       <td>
-        該当なし
+        N/A
       </td>
 
       <td style={{ 'text-align': 'center' }}>
-        M / I
+        M/I
       </td>
     </tr>
+
+    {
+      ' '
+    }
 
     <tr>
       <td>
@@ -532,17 +578,22 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td>
-        JMXサーバーのSSL証明書を含むトラストキーストアのファイルパスです。
+        The filepath of the trust keystore containing the JMX server's SSL
+        certificate.
       </td>
 
       <td>
-        該当なし
+        N/A
       </td>
 
       <td style={{ 'text-align': 'center' }}>
-        M / I
+        M/I
       </td>
     </tr>
+
+    {
+      ' '
+    }
 
     <tr>
       <td>
@@ -552,17 +603,21 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td>
-        JMXトラストストアのパスワードです。
+        The password for the JMX trust store.
       </td>
 
       <td>
-        該当なし
+        N/A
       </td>
 
       <td style={{ 'text-align': 'center' }}>
-        M / I
+        M/I
       </td>
     </tr>
+
+    {
+      ' '
+    }
 
     <tr>
       <td>
@@ -572,7 +627,8 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td>
-        メトリクスを収集するために JMX ホストに接続しているデフォルトのユーザーです。JMX ホストで username フィールドが省略された場合は、この値が使用されます。
+        The default user that is connecting to the JMX host to collect metrics. If
+        the username field is omitted for a JMX host, this value will be used.
       </td>
 
       <td>
@@ -580,9 +636,13 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td style={{ 'text-align': 'center' }}>
-        M / I
+        M/I
       </td>
     </tr>
+
+    {
+      ' '
+    }
 
     <tr>
       <td>
@@ -592,7 +652,8 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td>
-        JMX ホストに接続するためのデフォルトのパスワードです。JMX ホストでパスワードフィールドが省略された場合は、この値が使用されます。
+        The default password to connect to the JMX host. If the password field is
+        omitted for a JMX host, this value will be used.
       </td>
 
       <td>
@@ -600,9 +661,13 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td style={{ 'text-align': 'center' }}>
-        M / I
+        M/I
       </td>
     </tr>
+
+    {
+      ' '
+    }
 
     <tr>
       <td>
@@ -612,7 +677,7 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td>
-        個々のJMXクエリのタイムアウト（単位：ミリ秒）。
+        The timeout for individual JMX queries in milliseconds.
       </td>
 
       <td>
@@ -620,35 +685,33 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td style={{ 'text-align': 'center' }}>
-        M / I
+        M/I
       </td>
     </tr>
   </tbody>
 </table>
 
-## ブローカーTLS接続オプション [#broker-tls]
+## Broker TLS connection options [#broker-tls]
 
-ブローカープロトコルが`SSL`または`SASL_SSL`の場合、これらのオプションが必要です。
-
-'' '' ''
+You need these options if the broker protocol is `SSL` or `SASL_SSL`.
 
 <table>
   <thead>
     <tr>
       <th style={{ width: "150px" }}>
-        設定
+        Setting
       </th>
 
       <th>
-        説明
+        Description
       </th>
 
       <th>
-        デフォルト
+        Default
       </th>
 
       <th>
-        に適用されます
+        Applies To
       </th>
     </tr>
   </thead>
@@ -662,17 +725,21 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td>
-        SSLおよびSASL_SSLリスナー用の認証局ファイル（PEM形式）です。
+        The certificate authority file for SSL and SASL_SSL listeners, in PEM format.
       </td>
 
       <td>
-        該当なし
+        N/A
       </td>
 
       <td style={{ "text-align": "center" }}>
-        M / I
+        M/I
       </td>
     </tr>
+
+    {
+      ' '
+    }
 
     <tr>
       <td>
@@ -682,17 +749,21 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td>
-        SSLおよびSASL_SSLリスナー用のクライアント証明書ファイル（PEM形式）です。
+        The client certificate file for SSL and SASL_SSL listeners, in PEM format.
       </td>
 
       <td>
-        該当なし
+        N/A
       </td>
 
       <td style={{ 'text-align': 'center' }}>
-        M / I
+        M/I
       </td>
     </tr>
+
+    {
+      ' '
+    }
 
     <tr>
       <td>
@@ -702,17 +773,21 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td>
-        SSLおよびSASL_SSLリスナー用のクライアントキーファイル（PEM形式）です。
+        The client key file for SSL and SASL_SSL listeners, in PEM format.
       </td>
 
       <td>
-        該当なし
+        N/A
       </td>
 
       <td style={{ 'text-align': 'center' }}>
-        M / I
+        M/I
       </td>
     </tr>
+
+    {
+      ' '
+    }
 
     <tr>
       <td>
@@ -722,7 +797,7 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td>
-        サーバーの証明書チェーンとホスト名の検証をスキップします。
+        Skip verifying the server's certificate chain and host name.
       </td>
 
       <td>
@@ -730,35 +805,33 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td style={{ 'text-align': 'center' }}>
-        M / I
+        M/I
       </td>
     </tr>
   </tbody>
 </table>
 
-## ブローカーSASLおよびKerberos接続オプション [#broker-sasl-kerberos]
+## Broker SASL and Kerberos connection options [#broker-sasl-kerberos]
 
-ブローカープロトコルが`SASL_PLAINTEXT`または`SASL_SSL`の場合、これらのオプションが必要です。
-
-'' '' '' '' '' '' '' ''
+You need these options if the broker protocol is `SASL_PLAINTEXT` or `SASL_SSL`.
 
 <table>
   <thead>
     <tr>
       <th style={{ width: "150px" }}>
-        設定
+        Setting
       </th>
 
       <th>
-        説明
+        Description
       </th>
 
       <th>
-        デフォルト
+        Default
       </th>
 
       <th>
-        に適用されます
+        Applies To
       </th>
     </tr>
   </thead>
@@ -772,17 +845,21 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td>
-        使用するSASL認証のタイプ。サポートされているオプションは、 `SCRAM-SHA-512` 、 `SCRAM-SHA-256` 、 `PLAIN` 、および`GSSAPI`です。
+        The type of SASL authentication to use. Supported options are `SCRAM-SHA-512`, `SCRAM-SHA-256`, `PLAIN`, and `GSSAPI`.
       </td>
 
       <td>
-        該当なし
+        N/A
       </td>
 
       <td style={{ "text-align": "center" }}>
-        M / I
+        M/I
       </td>
     </tr>
+
+    {
+      ' '
+    }
 
     <tr>
       <td>
@@ -792,17 +869,21 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td>
-        PLAINおよびSCRAMメカニズムで必要なSASLユーザー名。
+        SASL username required with the PLAIN and SCRAM mechanisms.
       </td>
 
       <td>
-        該当なし
+        N/A
       </td>
 
       <td style={{ 'text-align': 'center' }}>
-        M / I
+        M/I
       </td>
     </tr>
+
+    {
+      ' '
+    }
 
     <tr>
       <td>
@@ -812,17 +893,21 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td>
-        PLAINおよびSCRAMメカニズムで必要なSASLパスワード。
+        SASL password required with the PLAIN and SCRAM mechanisms.
       </td>
 
       <td>
-        該当なし
+        N/A
       </td>
 
       <td style={{ 'text-align': 'center' }}>
-        M / I
+        M/I
       </td>
     </tr>
+
+    {
+      ' '
+    }
 
     <tr>
       <td>
@@ -832,17 +917,21 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td>
-        GSSAPI機構で必要なKerberosレルム。
+        Kerberos realm required with the GSSAPI mechanism.
       </td>
 
       <td>
-        該当なし
+        N/A
       </td>
 
       <td style={{ 'text-align': 'center' }}>
-        M / I
+        M/I
       </td>
     </tr>
+
+    {
+      ' '
+    }
 
     <tr>
       <td>
@@ -852,17 +941,21 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td>
-        GSSAPI機構で必要なKerberosサービス名です。
+        Kerberos service name required with the GSSAPI mechanism.
       </td>
 
       <td>
-        該当なし
+        N/A
       </td>
 
       <td style={{ 'text-align': 'center' }}>
-        M / I
+        M/I
       </td>
     </tr>
+
+    {
+      ' '
+    }
 
     <tr>
       <td>
@@ -872,17 +965,21 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td>
-        GSSAPI機構で必要なKerberosユーザー名。
+        Kerberos username required with the GSSAPI mechanism.
       </td>
 
       <td>
-        該当なし
+        N/A
       </td>
 
       <td style={{ 'text-align': 'center' }}>
-        M / I
+        M/I
       </td>
     </tr>
+
+    {
+      ' '
+    }
 
     <tr>
       <td>
@@ -892,17 +989,21 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td>
-        GSSAPI機構で必要なKerberos key tabのパス。
+        Kerberos key tab path required with the GSSAPI mechanism.
       </td>
 
       <td>
-        該当なし
+        N/A
       </td>
 
       <td style={{ 'text-align': 'center' }}>
-        M / I
+        M/I
       </td>
     </tr>
+
+    {
+      ' '
+    }
 
     <tr>
       <td>
@@ -912,7 +1013,7 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td>
-        GSSAPI機構で必要なKerberosのコンフィグパスです。
+        Kerberos config path required with the GSSAPI mechanism.
       </td>
 
       <td>
@@ -920,9 +1021,13 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td style={{ 'text-align': 'center' }}>
-        M / I
+        M/I
       </td>
     </tr>
+
+    {
+      ' '
+    }
 
     <tr>
       <td>
@@ -932,7 +1037,7 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td>
-        FASTネゴシエーションを無効にします。
+        Disable FAST negotiation.
       </td>
 
       <td>
@@ -940,33 +1045,31 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td style={{ 'text-align': 'center' }}>
-        M / I
+        M/I
       </td>
     </tr>
   </tbody>
 </table>
 
-## ブローカーコレクション フィルタリング [#broker-filteri]
-
-'' '' ''
+## Broker Collection filtering [#broker-filteri]
 
 <table>
   <thead>
     <tr>
       <th style={{ width: "150px" }}>
-        設定
+        Setting
       </th>
 
       <th>
-        説明
+        Description
       </th>
 
       <th>
-        デフォルト
+        Default
       </th>
 
       <th>
-        に適用されます
+        Applies To
       </th>
     </tr>
   </thead>
@@ -980,7 +1083,7 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td>
-        構成されたブートストラップブローカーに関連するメトリックのみを収集します。`autodiscover_strategy`が`bootstrap`の場合にのみ使用されます。
+        Collect only the metrics related to the configured bootstrap broker. Only used if `autodiscover_strategy` is `bootstrap`.
 
         <DNT>
           **Environments that use discovery (such as Kubernetes) must be set to true because othwerwise brokers will be discovered twice: By the integration, and by the discovery mechanism, leading to duplicate data.**
@@ -996,9 +1099,13 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td style={{ "text-align": "center" }}>
-        M / I
+        M/I
       </td>
     </tr>
+
+    {
+      ' '
+    }
 
     <tr>
       <td>
@@ -1008,17 +1115,22 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td>
-        収集するトピックの数を決定します。オプションは、 `all` 、 `none` 、 `list` 、または`regex`です。
+        Determines how many topics we collect. Options are `all`, `none`, `list`, or
+        `regex`.
       </td>
 
       <td>
-        なし
+        none
       </td>
 
       <td style={{ 'text-align': 'center' }}>
-        M / I
+        M/I
       </td>
     </tr>
+
+    {
+      ' '
+    }
 
     <tr>
       <td>
@@ -1028,7 +1140,8 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td>
-        監視するトピック名のJSON配列。`topic_mode`が`list`に設定されている場合にのみ有効です。
+        JSON array of topic names to monitor. Only in effect if `topic_mode` is set
+        to `list`.
       </td>
 
       <td>
@@ -1036,9 +1149,13 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td style={{ 'text-align': 'center' }}>
-        M / I
+        M/I
       </td>
     </tr>
+
+    {
+      ' '
+    }
 
     <tr>
       <td>
@@ -1048,15 +1165,16 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td>
-        監視するトピック名に一致する正規表現パターン。`topic_mode`が`regex`に設定されている場合にのみ有効です。
+        Regex pattern that matches the topic names to monitor. Only in effect if
+        `topic_mode` is set to `regex`.
       </td>
 
       <td>
-        該当なし
+        N/A
       </td>
 
       <td style={{ 'text-align': 'center' }}>
-        M / I
+        M/I
       </td>
     </tr>
 
@@ -1068,7 +1186,7 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td>
-        トピックコレクションを複数のインスタンスに分割するために使用されます。`<bucket number>/<number of buckets>`の形式である必要があります。
+        Used to split topic collection across multiple instances. Should be of the form `<bucket number>/<number of buckets>`.
       </td>
 
       <td>
@@ -1076,7 +1194,7 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td style={{ "text-align": "center" }}>
-        M / I
+        M/I
       </td>
     </tr>
 
@@ -1088,7 +1206,7 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td>
-        メトリックトピックサイズを収集します。オプションは`true`または`false`で、デフォルトは`false`です。
+        Collect the metric Topic size. Options are `true` or `false`, defaults to `false`.
 
         <DNT>
           **This is a resource-intensive metric to collect, especially against many topics.**
@@ -1100,7 +1218,7 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td style={{ "text-align": "center" }}>
-        M / I
+        M/I
       </td>
     </tr>
 
@@ -1112,7 +1230,7 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td>
-        メトリックトピックオフセットを収集します。オプションは`true`または`false`で、デフォルトは`false`です。
+        Collect the metric Topic offset. Options are `true` or `false`, defaults to `false`.
 
         <DNT>
           **This is a resource-intensive metric to collect, especially against many topics.**
@@ -1124,35 +1242,33 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td style={{ "text-align": "center" }}>
-        M / I
+        M/I
       </td>
     </tr>
   </tbody>
 </table>
 
-## KafkaConsumerSampleおよびKafkaProducerSampleコレクションの設定 [#KafkaConsumerSample-collection]
+## Configure KafkaConsumerSample and KafkaProducerSample collection [#KafkaConsumerSample-collection]
 
-Kafka インテグレーションは、メトリクス ( <strong>M</strong> ) 情報とインベントリ ( <strong>I</strong> ) 情報の両方を収集します。 それぞれのコレクションに使用できる設定を確認するには、以下の<DNT>**Applies To**</DNT>列を確認してください。
-
-'' '' '' '' '' ''
+The Kafka integration collects both Metrics(<strong>M</strong>) and Inventory(<strong>I</strong>) information. Check the <DNT>**Applies To**</DNT> column below to find which settings can be used for each specific collection:
 
 <table>
   <thead>
     <tr>
       <th style={{ width: "150px" }}>
-        設定
+        Setting
       </th>
 
       <th>
-        説明
+        Description
       </th>
 
       <th>
-        デフォルト
+        Default
       </th>
 
       <th>
-        に適用されます
+        Applies To
       </th>
     </tr>
   </thead>
@@ -1166,15 +1282,15 @@ Kafka インテグレーションは、メトリクス ( <strong>M</strong> ) �
       </td>
 
       <td>
-        モニターするクラスタを一意に識別するためのユーザー定義の名前。 <DNT>**Required**</DNT> 。
+        User-defined name to uniquely identify the cluster being monitored. <DNT>**Required**</DNT>.
       </td>
 
       <td>
-        該当なし
+        N/A
       </td>
 
       <td style={{ "text-align": "center" }}>
-        M / I
+        M/I
       </td>
     </tr>
 
@@ -1186,7 +1302,11 @@ Kafka インテグレーションは、メトリクス ( <strong>M</strong> ) �
       </td>
 
       <td>
-        収集するプロデューサー。プロデューサーごとに、 `name` 、 `hostname` 、 `port` 、 `username` 、および`password`をJSON形式で指定できます。`name`は、Kafkaに表示されるプロデューサーの名前です。設定されていない場合、host：port内のすべてのプロデューサーからのメトリックが収集されます。`host` 、 `port` 、 `username` 、および`password`はオプションのJMX設定であり、指定されていない場合はデフォルトを使用します。値`default`を設定して`name`を未定義にし、 `host` 、 `port` 、 `username` 、および`password`のデフォルト値を使用することもできます。KafkaProducerSampleを作成するために必要です。
+        Producers to collect. For each producer a `name`, `hostname`, `port`, `username`, and `password` can be specified in JSON form.
+        `name` is the producer’s name as it appears in Kafka. If it is not set, metrics from all producers in the host:port will be gathered.
+        `host`, `port`, `username`, and `password` are the optional JMX settings and use the default if unspecified.
+        It is also possible to set the value `default` to let the `name` undefined and use the default values for `host`, `port`, `username` and `password`.
+        Required to produce KafkaProducerSample.
 
         <DNT>
           **Examples:**
@@ -1202,7 +1322,7 @@ Kafka インテグレーションは、メトリクス ( <strong>M</strong> ) �
       </td>
 
       <td style={{ "text-align": "center" }}>
-        M / I
+        M/I
       </td>
     </tr>
 
@@ -1214,7 +1334,11 @@ Kafka インテグレーションは、メトリクス ( <strong>M</strong> ) �
       </td>
 
       <td>
-        収集する消費者。コンシューマーごとに、 `name` 、 `hostname` 、 `port` 、 `username` 、および`password`をJSON形式で指定できます。`name`は、Kafkaに表示される消費者の名前です。設定されていない場合、host：port内のすべてのコンシューマーからのメトリックが収集されます。`host` 、 `port` 、 `username` 、および`password`はオプションのJMX設定であり、指定されていない場合はデフォルトを使用します。値`default`を設定して`name`を未定義にし、 `host` 、 `port` 、 `username` 、および`password`のデフォルト値を使用することもできます。KafkaConsumerSampleを作成するために必要です。
+        Consumers to collect. For each consumer a `name`, `hostname`, `port`, `username`, and `password` can be specified in JSON form.
+        `name` is the consumer’s name as it appears in Kafka. If it is not set, metrics from all consumers in the host:port will be gathered.
+        `host`, `port`, `username`, and `password` are the optional JMX settings and use the default if unspecified.
+        It is also possible to set the value `default` to let the `name` undefined and use the default values for `host`, `port`, `username` and `password`.
+        Required to produce KafkaConsumerSample.
 
         <DNT>
           **Examples:**
@@ -1230,9 +1354,13 @@ Kafka インテグレーションは、メトリクス ( <strong>M</strong> ) �
       </td>
 
       <td style={{ "text-align": "center" }}>
-        M / I
+        M/I
       </td>
     </tr>
+
+    {
+      ' '
+    }
 
     <tr>
       <td>
@@ -1242,17 +1370,22 @@ Kafka インテグレーションは、メトリクス ( <strong>M</strong> ) �
       </td>
 
       <td>
-        JMX メトリクスを収集するためのデフォルトのホストです。プロデューサまたはコンシューマの構成でホストフィールドが省略された場合、この値が使用されます。
+        The default host to collect JMX metrics. If the host field is omitted from a
+        producer or consumer configuration, this value will be used.
       </td>
 
       <td>
-        ローカルホスト
+        localhost
       </td>
 
       <td style={{ 'text-align': 'center' }}>
-        M / I
+        M/I
       </td>
     </tr>
+
+    {
+      ' '
+    }
 
     <tr>
       <td>
@@ -1262,7 +1395,8 @@ Kafka インテグレーションは、メトリクス ( <strong>M</strong> ) �
       </td>
 
       <td>
-        JMX メトリクスを収集するためのデフォルトのポートです。プロデューサまたはコンシューマの設定でポートフィールドが省略された場合、この値が使用されます。
+        The default port to collect JMX metrics. If the port field is omitted from a
+        producer or consumer configuration, this value will be used.
       </td>
 
       <td>
@@ -1270,9 +1404,13 @@ Kafka インテグレーションは、メトリクス ( <strong>M</strong> ) �
       </td>
 
       <td style={{ 'text-align': 'center' }}>
-        M / I
+        M/I
       </td>
     </tr>
+
+    {
+      ' '
+    }
 
     <tr>
       <td>
@@ -1282,7 +1420,9 @@ Kafka インテグレーションは、メトリクス ( <strong>M</strong> ) �
       </td>
 
       <td>
-        メトリクスを収集するために JMX ホストに接続しているデフォルトのユーザー。プロデューサまたはコンシューマの構成で username フィールドが省略された場合は、この値が使用されます。
+        The default user that is connecting to the JMX host to collect metrics. If
+        the username field is omitted from a producer or consumer configuration,
+        this value will be used.
       </td>
 
       <td>
@@ -1290,9 +1430,13 @@ Kafka インテグレーションは、メトリクス ( <strong>M</strong> ) �
       </td>
 
       <td style={{ 'text-align': 'center' }}>
-        M / I
+        M/I
       </td>
     </tr>
+
+    {
+      ' '
+    }
 
     <tr>
       <td>
@@ -1302,7 +1446,8 @@ Kafka インテグレーションは、メトリクス ( <strong>M</strong> ) �
       </td>
 
       <td>
-        JMX ホストに接続するためのデフォルトのパスワードです。プロデューサまたはコンシューマの設定でパスワードフィールドが省略された場合、この値が使用されます。
+        The default password to connect to the JMX host. If the password field is
+        omitted from a producer or consumer configuration, this value will be used.
       </td>
 
       <td>
@@ -1310,9 +1455,13 @@ Kafka インテグレーションは、メトリクス ( <strong>M</strong> ) �
       </td>
 
       <td style={{ 'text-align': 'center' }}>
-        M / I
+        M/I
       </td>
     </tr>
+
+    {
+      ' '
+    }
 
     <tr>
       <td>
@@ -1322,7 +1471,7 @@ Kafka インテグレーションは、メトリクス ( <strong>M</strong> ) �
       </td>
 
       <td>
-        メトリックのみの収集を有効にするには、 `true`に設定します。
+        Set to `true` to enable Metrics only collection.
       </td>
 
       <td>
@@ -1332,6 +1481,10 @@ Kafka インテグレーションは、メトリクス ( <strong>M</strong> ) �
       <td style={{ 'text-align': 'center' }}/>
     </tr>
 
+    {
+      ' '
+    }
+
     <tr>
       <td>
         <DNT>
@@ -1340,7 +1493,7 @@ Kafka インテグレーションは、メトリクス ( <strong>M</strong> ) �
       </td>
 
       <td>
-        インベントリのみの収集を有効にするには、 `true`に設定します。
+        Set to `true` to enable Inventory only collection.
       </td>
 
       <td>
@@ -1352,29 +1505,27 @@ Kafka インテグレーションは、メトリクス ( <strong>M</strong> ) �
   </tbody>
 </table>
 
-#### JMXのSSLとタイムアウトのオプション
+#### JMX SSL and timeout options
 
-これらのオプションは、インスタンス上のすべてのJMX接続に適用されます。
-
-'' '' '' ''
+These options apply to all JMX connections on the instance.
 
 <table>
   <thead>
     <tr>
       <th style={{ width: "150px" }}>
-        設定
+        Setting
       </th>
 
       <th>
-        説明
+        Description
       </th>
 
       <th>
-        デフォルト
+        Default
       </th>
 
       <th>
-        に適用されます
+        Applies To
       </th>
     </tr>
   </thead>
@@ -1388,17 +1539,21 @@ Kafka インテグレーションは、メトリクス ( <strong>M</strong> ) �
       </td>
 
       <td>
-        JMXクライアントのSSL証明書を含むキーストアのファイルパスです。
+        The filepath of the keystore containing the JMX client's SSL certificate.
       </td>
 
       <td>
-        該当なし
+        N/A
       </td>
 
       <td style={{ "text-align": "center" }}>
-        M / I
+        M/I
       </td>
     </tr>
+
+    {
+      ' '
+    }
 
     <tr>
       <td>
@@ -1408,17 +1563,21 @@ Kafka インテグレーションは、メトリクス ( <strong>M</strong> ) �
       </td>
 
       <td>
-        JMXのSSLキーストアのパスワードです。
+        The password for the JMX SSL key store.
       </td>
 
       <td>
-        該当なし
+        N/A
       </td>
 
       <td style={{ 'text-align': 'center' }}>
-        M / I
+        M/I
       </td>
     </tr>
+
+    {
+      ' '
+    }
 
     <tr>
       <td>
@@ -1428,17 +1587,22 @@ Kafka インテグレーションは、メトリクス ( <strong>M</strong> ) �
       </td>
 
       <td>
-        JMXサーバーのSSL証明書を含むトラストキーストアのファイルパスです。
+        The filepath of the trust keystore containing the JMX server's SSL
+        certificate.
       </td>
 
       <td>
-        該当なし
+        N/A
       </td>
 
       <td style={{ 'text-align': 'center' }}>
-        M / I
+        M/I
       </td>
     </tr>
+
+    {
+      ' '
+    }
 
     <tr>
       <td>
@@ -1448,17 +1612,21 @@ Kafka インテグレーションは、メトリクス ( <strong>M</strong> ) �
       </td>
 
       <td>
-        JMXトラストストアのパスワードです。
+        The password for the JMX trust store.
       </td>
 
       <td>
-        該当なし
+        N/A
       </td>
 
       <td style={{ 'text-align': 'center' }}>
-        M / I
+        M/I
       </td>
     </tr>
+
+    {
+      ' '
+    }
 
     <tr>
       <td>
@@ -1468,7 +1636,7 @@ Kafka インテグレーションは、メトリクス ( <strong>M</strong> ) �
       </td>
 
       <td>
-        個々のJMXクエリのタイムアウト（単位：ミリ秒）。
+        The timeout for individual JMX queries in milliseconds.
       </td>
 
       <td>
@@ -1476,35 +1644,33 @@ Kafka インテグレーションは、メトリクス ( <strong>M</strong> ) �
       </td>
 
       <td style={{ 'text-align': 'center' }}>
-        M / I
+        M/I
       </td>
     </tr>
   </tbody>
 </table>
 
-## KafkaOffsetSampleコレクションの設定 [#KafkaOffsetSample-collection]
+## Configure KafkaOffsetSample collection [#KafkaOffsetSample-collection]
 
-Kafka インテグレーションはメトリックスとインベントリ情報の両方を収集します。 それぞれのコレクションに使用できる設定を確認するには、以下の<DNT>**Applies To**</DNT>列を確認してください。
-
-'' '' ''
+The Kafka integration collects both Metrics and Inventory information. Check the <DNT>**Applies To**</DNT> column below to find which settings can be used for each specific collection:
 
 <table>
   <thead>
     <tr>
       <th style={{ width: "150px" }}>
-        設定
+        Setting
       </th>
 
       <th>
-        説明
+        Description
       </th>
 
       <th>
-        デフォルト
+        Default
       </th>
 
       <th>
-        に適用されます
+        Applies To
       </th>
     </tr>
   </thead>
@@ -1518,15 +1684,15 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td>
-        モニターするクラスタを一意に識別するためのユーザー定義の名前。 <DNT>**Required**</DNT> 。
+        User-defined name to uniquely identify the cluster being monitored. <DNT>**Required**</DNT>.
       </td>
 
       <td>
-        該当なし
+        N/A
       </td>
 
       <td style={{ "text-align": "center" }}>
-        M / I
+        M/I
       </td>
     </tr>
 
@@ -1538,11 +1704,11 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td>
-        接続先のKafkaブローカーのバージョンで、最適なAPIバージョンを設定するために使用されます。ブローカーのバージョンと一致するか、それ以下でなければなりません。
+        The version of the Kafka broker you're connecting to, used for setting optimum API versions. It must match -or be lower than- the version from the broker.
 
-        1.0.0より古いバージョンでは、一部の機能が失われている可能性があります。
+        Versions older than 1.0.0 may be missing some features.
 
-        <DNT>**Note that if the broker binary name is kafka_2.12-2.7.0 the Kafka api version to be used is 2.7.0, the preceding 2.12 is the Scala language version**</DNT>。
+        <DNT>**Note that if the broker binary name is kafka_2.12-2.7.0 the Kafka api version to be used is 2.7.0, the preceding 2.12 is the Scala language version**</DNT>.
       </td>
 
       <td>
@@ -1550,9 +1716,13 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td style={{ "text-align": "center" }}>
-        M / I
+        M/I
       </td>
     </tr>
+
+    {
+      ' '
+    }
 
     <tr>
       <td>
@@ -1562,15 +1732,15 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td>
-        ブローカーを発見する方法。オプションは`zookeeper`または`bootstrap`です。
+        the method of discovering brokers. Options are `zookeeper` or `bootstrap`.
       </td>
 
       <td>
-        飼育係
+        zookeeper
       </td>
 
       <td style={{ 'text-align': 'center' }}>
-        M / I
+        M/I
       </td>
     </tr>
 
@@ -1582,7 +1752,7 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td>
-        trueに設定すると、KafkaOffsetSampleにコンシューマーのオフセットデータを投入します。
+        Populate consumer offset data in KafkaOffsetSample if set to true.
 
         <DNT>
           **Note that this option will skip Broker/Consumer/Producer collection and only collect KafkaOffsetSample**
@@ -1594,7 +1764,7 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td style={{ "text-align": "center" }}>
-        M / I
+        M/I
       </td>
     </tr>
 
@@ -1606,17 +1776,17 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td>
-        オフセット統計を収集する消費者グループにマッチする正規表現パターンです。これは、300個の消費者グループの統計を収集する場合に限られます。
+        regex pattern that matches the consumer groups to collect offset statistics for. This is limited to collecting statistics for 300 consumer groups.
 
-        注：このオプションは、CONSUMER_OFFSETがtrueの場合に設定する必要があります。
+        Note: This option must be set when CONSUMER_OFFSET is true.
       </td>
 
       <td>
-        該当なし
+        N/A
       </td>
 
       <td style={{ "text-align": "center" }}>
-        M / I
+        M/I
       </td>
     </tr>
 
@@ -1628,7 +1798,7 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td>
-        アクティブなコンシューマーがないコンシューマーグループからオフセットメトリックを収集します。CONSUMER_OFFSETをtrueに設定する必要があります。
+        Collects offset metrics from consumer groups without any active consumer, it requires CONSUMER_OFFSET set to true.
       </td>
 
       <td>
@@ -1636,7 +1806,7 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td style={{ "text-align": "center" }}>
-        M / I
+        M/I
       </td>
     </tr>
 
@@ -1648,17 +1818,21 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td>
-        トピックごとにconsumerGroupの追加のメトリック集計をアクティブにします。CONSUMER_OFFSETをtrueに設定する必要があります。
+        Activates an extra metric aggregation for consumerGroup by topic. it requires CONSUMER_OFFSET set to true.
       </td>
 
       <td>
-        該当なし
+        N/A
       </td>
 
       <td style={{ "text-align": "center" }}>
-        M / I
+        M/I
       </td>
     </tr>
+
+    {
+      ' '
+    }
 
     <tr>
       <td>
@@ -1668,7 +1842,7 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td>
-        メトリックのみの収集を有効にするには、 `true`に設定します。
+        Set to `true` to enable Metrics only collection.
       </td>
 
       <td>
@@ -1678,6 +1852,10 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       <td style={{ 'text-align': 'center' }}/>
     </tr>
 
+    {
+      ' '
+    }
+
     <tr>
       <td>
         <DNT>
@@ -1686,7 +1864,7 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td>
-        インベントリのみの収集を有効にするには、 `true`に設定します。
+        Set to `true` to enable Inventory only collection.
       </td>
 
       <td>
@@ -1698,29 +1876,27 @@ Kafka インテグレーションはメトリックスとインベントリ情�
   </tbody>
 </table>
 
-## Zookeeper の自動検出用引数 [#zookeeper-autodiscovery]
+## Zookeeper autodiscovery arguments [#zookeeper-autodiscovery]
 
-これは、 `autodiscover_strategy`オプションが`zookeeper`に設定されている場合にのみ関係します。
-
-'' '' '' ''
+This is only relevant when the `autodiscover_strategy` option is set to `zookeeper`.
 
 <table>
   <thead>
     <tr>
       <th style={{ width: "150px" }}>
-        設定
+        Setting
       </th>
 
       <th>
-        説明
+        Description
       </th>
 
       <th>
-        デフォルト
+        Default
       </th>
 
       <th>
-        に適用されます
+        Applies To
       </th>
     </tr>
   </thead>
@@ -1734,7 +1910,7 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td>
-        接続する必要のあるApache ZooKeeperホストの一覧 (JSON形式)
+        The list of Apache ZooKeeper hosts (in JSON format) that need to be connected.
 
         <DNT>
           **If `CONSUMER_OFFSET` is set to `false` `KafkaBrokerSamples` and `KafkaTopicSamples` will be collected.**
@@ -1746,9 +1922,13 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td style={{ "text-align": "center" }}>
-        M / I
+        M/I
       </td>
     </tr>
+
+    {
+      ' '
+    }
 
     <tr>
       <td>
@@ -1758,17 +1938,22 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td>
-        接続に使用されるZooKeeper認証スキーム。現在、サポートされている値は`digest`のみです。省略した場合、認証は使用されません。
+        The ZooKeeper authentication scheme that is used to connect. Currently, the
+        only supported value is `digest`. If omitted, no authentication is used.
       </td>
 
       <td>
-        該当なし
+        N/A
       </td>
 
       <td style={{ 'text-align': 'center' }}>
-        M / I
+        M/I
       </td>
     </tr>
+
+    {
+      ' '
+    }
 
     <tr>
       <td>
@@ -1778,17 +1963,23 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td>
-        接続に使用されるZooKeeper認証シークレット。`username:password`の形式である必要があります。`zookeeper_auth_scheme`が指定されている場合にのみ必要です。
+        The ZooKeeper authentication secret that is used to connect. Should be of
+        the form `username:password`. Only required if `zookeeper_auth_scheme` is
+        specified.
       </td>
 
       <td>
-        該当なし
+        N/A
       </td>
 
       <td style={{ 'text-align': 'center' }}>
-        M / I
+        M/I
       </td>
     </tr>
+
+    {
+      ' '
+    }
 
     <tr>
       <td>
@@ -1798,17 +1989,22 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td>
-        Kafka構成が存在するZookeeperノード。デフォルトは`/`です。
+        The Zookeeper node under which the Kafka configuration resides. Defaults to
+        `/`.
       </td>
 
       <td>
-        該当なし
+        N/A
       </td>
 
       <td style={{ 'text-align': 'center' }}>
-        M / I
+        M/I
       </td>
     </tr>
+
+    {
+      ' '
+    }
 
     <tr>
       <td>
@@ -1818,45 +2014,45 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td>
-        特定のリスナーを使用してブローカーに接続します。 設定されていない場合は、テスト接続に成功した最初のリスナーが使用されます。 サポートされる値は`PLAINTEXT` 、 `SASL_PLAINTEXT` 、 `SSL` 、 `SASL_SSL`です。
+        Use a specific listener to connect to a broker. If unset, the first listener
+        that passes a successful test connection is used. Supported values are
+        `PLAINTEXT`, `SASL_PLAINTEXT`, `SSL`, and `SASL_SSL`.
 
-        **`SASL_*`プロトコルはKerberos（GSSAPI）認証のみをサポートしていることに注意してください。**
+        **Note the `SASL_*` protocols only support Kerberos (GSSAPI) authentication.**
       </td>
 
       <td>
-        該当なし
+        N/A
       </td>
 
       <td style={{ 'text-align': 'center' }}>
-        M / I
+        M/I
       </td>
     </tr>
   </tbody>
 </table>
 
-## ブートストラップ・ブローカー発見用引数 [#bootstrap-broker]
+## Bootstrap broker discovery arguments [#bootstrap-broker]
 
-これは、 `autodiscover_strategy`オプションが`bootstrap`に設定されている場合にのみ関係します。
-
-'' '' ''
+This is only relevant when the `autodiscover_strategy` option is set to `bootstrap`.
 
 <table>
   <thead>
     <tr>
       <th style={{ width: "150px" }}>
-        設定
+        Setting
       </th>
 
       <th>
-        説明
+        Description
       </th>
 
       <th>
-        デフォルト
+        Default
       </th>
 
       <th>
-        に適用されます
+        Applies To
       </th>
     </tr>
   </thead>
@@ -1870,7 +2066,7 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td>
-        ブートストラップ・ブローカーのホストです。
+        The host for the bootstrap broker.
 
         <DNT>
           **If `CONSUMER_OFFSET` is set to `false` `KafkaBrokerSamples` and `KafkaTopicSamples` will be collected.**
@@ -1878,13 +2074,17 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td>
-        該当なし
+        N/A
       </td>
 
       <td style={{ "text-align": "center" }}>
-        M / I
+        M/I
       </td>
     </tr>
+
+    {
+      ' '
+    }
 
     <tr>
       <td>
@@ -1894,15 +2094,15 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td>
-        ブートストラップ・ブローカーのKafkaポートです。
+        The Kafka port for the bootstrap broker.
       </td>
 
       <td>
-        該当なし
+        N/A
       </td>
 
       <td style={{ 'text-align': 'center' }}>
-        M / I
+        M/I
       </td>
     </tr>
 
@@ -1914,9 +2114,9 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td>
-        ブートストラップブローカーへの接続に使用するプロトコル。サポートされている値は、 `PLAINTEXT` 、 `SASL_PLAINTEXT` 、 `SSL` 、および`SASL_SSL`です。
+        The protocol to use to connect to the bootstrap broker. Supported values are `PLAINTEXT`, `SASL_PLAINTEXT`, `SSL`, and `SASL_SSL`.
 
-        **`SASL_*`プロトコルはKerberos（GSSAPI）認証のみをサポートしていることに注意してください。**
+        **Note the `SASL_*` protocols only support Kerberos (GSSAPI) authentication.**
       </td>
 
       <td>
@@ -1924,7 +2124,7 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td style={{ "text-align": "center" }}>
-        M / I
+        M/I
       </td>
     </tr>
 
@@ -1936,7 +2136,7 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td>
-        クラスター内の各ブローカの収集に使用するJMXポートです。
+        The JMX port to use for collection on each broker in the cluster.
 
         <DNT>
           **Note that all discovered brokers should have JMX active on this port**
@@ -1944,13 +2144,17 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td>
-        該当なし
+        N/A
       </td>
 
       <td style={{ "text-align": "center" }}>
-        M / I
+        M/I
       </td>
     </tr>
+
+    {
+      ' '
+    }
 
     <tr>
       <td>
@@ -1960,17 +2164,21 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td>
-        クラスタ内の各ブローカの収集に使用するJMXユーザ。
+        The JMX user to use for collection on each broker in the cluster.
       </td>
 
       <td>
-        該当なし
+        N/A
       </td>
 
       <td style={{ 'text-align': 'center' }}>
-        M / I
+        M/I
       </td>
     </tr>
+
+    {
+      ' '
+    }
 
     <tr>
       <td>
@@ -1980,43 +2188,41 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td>
-        クラスター内の各ブローカの収集に使用するJMXパスワードです。
+        The JMX password to use for collection on each broker in the cluster.
       </td>
 
       <td>
-        該当なし
+        N/A
       </td>
 
       <td style={{ 'text-align': 'center' }}>
-        M / I
+        M/I
       </td>
     </tr>
   </tbody>
 </table>
 
-## JMXのSSLとタイムアウトのオプション [#jmx-ssl-timeout]
+## JMX SSL and timeout options [#jmx-ssl-timeout]
 
-これらは、インスタンス上のすべてのJMX接続に適用されます。
-
-'' '' '' '' '' ''
+These apply to all JMX connections on an instance.
 
 <table>
   <thead>
     <tr>
       <th style={{ width: "150px" }}>
-        設定
+        Setting
       </th>
 
       <th>
-        説明
+        Description
       </th>
 
       <th>
-        デフォルト
+        Default
       </th>
 
       <th>
-        に適用されます
+        Applies To
       </th>
     </tr>
   </thead>
@@ -2030,17 +2236,21 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td>
-        JMXクライアントのSSL証明書を含むキーストアのファイルパスです。
+        The filepath of the keystore containing the JMX client's SSL certificate.
       </td>
 
       <td>
-        該当なし
+        N/A
       </td>
 
       <td style={{ "text-align": "center" }}>
-        M / I
+        M/I
       </td>
     </tr>
+
+    {
+      ' '
+    }
 
     <tr>
       <td>
@@ -2050,17 +2260,21 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td>
-        JMXのSSLキーストアのパスワードです。
+        The password for the JMX SSL key store.
       </td>
 
       <td>
-        該当なし
+        N/A
       </td>
 
       <td style={{ 'text-align': 'center' }}>
-        M / I
+        M/I
       </td>
     </tr>
+
+    {
+      ' '
+    }
 
     <tr>
       <td>
@@ -2070,17 +2284,22 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td>
-        JMXサーバーのSSL証明書を含むトラストキーストアのファイルパスです。
+        The filepath of the trust keystore containing the JMX server's SSL
+        certificate.
       </td>
 
       <td>
-        該当なし
+        N/A
       </td>
 
       <td style={{ 'text-align': 'center' }}>
-        M / I
+        M/I
       </td>
     </tr>
+
+    {
+      ' '
+    }
 
     <tr>
       <td>
@@ -2090,17 +2309,21 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td>
-        JMXトラストストアのパスワードです。
+        The password for the JMX trust store.
       </td>
 
       <td>
-        該当なし
+        N/A
       </td>
 
       <td style={{ 'text-align': 'center' }}>
-        M / I
+        M/I
       </td>
     </tr>
+
+    {
+      ' '
+    }
 
     <tr>
       <td>
@@ -2110,7 +2333,8 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td>
-        メトリクスを収集するために JMX ホストに接続しているデフォルトのユーザーです。JMX ホストで username フィールドが省略された場合は、この値が使用されます。
+        The default user that is connecting to the JMX host to collect metrics. If
+        the username field is omitted for a JMX host, this value will be used.
       </td>
 
       <td>
@@ -2118,9 +2342,13 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td style={{ 'text-align': 'center' }}>
-        M / I
+        M/I
       </td>
     </tr>
+
+    {
+      ' '
+    }
 
     <tr>
       <td>
@@ -2130,7 +2358,8 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td>
-        JMX ホストに接続するためのデフォルトのパスワードです。JMX ホストでパスワードフィールドが省略された場合は、この値が使用されます。
+        The default password to connect to the JMX host. If the password field is
+        omitted for a JMX host, this value will be used.
       </td>
 
       <td>
@@ -2138,9 +2367,13 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td style={{ 'text-align': 'center' }}>
-        M / I
+        M/I
       </td>
     </tr>
+
+    {
+      ' '
+    }
 
     <tr>
       <td>
@@ -2150,7 +2383,7 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td>
-        個々のJMXクエリのタイムアウト（単位：ミリ秒）。
+        The timeout for individual JMX queries in milliseconds.
       </td>
 
       <td>
@@ -2158,76 +2391,78 @@ Kafka インテグレーションはメトリックスとインベントリ情�
       </td>
 
       <td style={{ 'text-align': 'center' }}>
-        M / I
+        M/I
       </td>
     </tr>
   </tbody>
 </table>
 
-## トラブルシューティング [#troubleshooting]
+## Troubleshooting [#troubleshooting]
 
 <CollapserGroup>
   <Collapser
     id="duplicate-info"
-    title="重複したデータが報告される"
+    title="Duplicate data being reported"
   >
-    プロデューサーおよび/またはコンシューマーを監視し、 `Topic mode`が`All` ：に設定されているエージェントの場合、重複データが報告されるという問題が発生する可能性があります。重複データを停止するには：[構成オプション](#config)`Collect topic size`がfalseに設定されていることを確認します。
+    For agents monitoring producers and/or consumers, and that have `Topic mode` set to `All`:, there may be a problem of duplicate data being reported. To stop the duplicate data: ensure that the [configuration option](#config) `Collect topic size` is set to false.
   </Collapser>
 
-  ''
+  {
+    ' '
+  }
 
   <Collapser
     id="zookeeper-node-not-found"
-    title="Integration is logging errors 'zk: node not found'."
+    title="Integration is logging errors 'zk: node not found'"
   >
-    [構成ファイル](#config)で`zookeeper_path`が正しく設定されていることを確認してください。
+    Ensure that `zookeeper_path` is set correctly in the [configuration file](#config).
   </Collapser>
 
   <Collapser
     id="jmx-connection-errors"
-    title="JMXの接続エラー"
+    title="JMX connection errors"
   >
-    Kafka統合は、 `nrjmx`と呼ばれるJMXヘルパーツールを使用して、ブローカー、コンシューマー、およびプロデューサーからJMXメトリックを取得します。JMXは、クラスター内のすべてのブローカーで有効化および構成する必要があります。また、統合を実行しているホストからJMXポートを介したブローカーへの接続を許可するように、ファイアウォールを調整する必要があります。
+    The Kafka integration uses a JMX helper tool called `nrjmx` to retrieve JMX metrics from brokers, consumers, and producers. JMX needs to be enabled and configured on all brokers in the cluster. Also, firewalls need to be tuned to allow connections from the host running the integration to the brokers over the JMX port.
 
-    JMXが正しく構成されているかどうかを確認するには、Kafka統合を実行しているマシンからブローカーごとに次のコマンドを実行します。`PORT` 、 `USERNAME` 、および`PASSWORD`変数をブローカーの対応するJMX設定に置き換えます。
+    To check whether JMX is correctly configured, run the following command for each broker from the machine running the Kafka integration. Replace the `PORT`, `USERNAME`, and `PASSWORD` variables with the corresponding JMX settings for the brokers:
 
     ```shell
     echo "*:*" | nrjmx -hostname MY_HOSTNAME -port MY_PORT -v -username MY_USERNAME -password MY_PASSWORD
     ```
 
-    このコマンドを実行すると、エラーなしで一連の長いメトリクスを示す出力が生成されます。
+    The command should generate the output showing a long series of metrics without any errors.
   </Collapser>
 
   <Collapser
     id="kerberos-authentication"
-    title="Kerberos認証の失敗"
+    title="Kerberos authentication failing"
   >
-    インテグレーションでは、以下のようなエラーが表示されることがあります。
+    The integration might show an error like the following:
 
     ```shell
     KRB Error: (6) KDC_ERR_C_PRINCIPAL_UNKNOWN Client not found in Kerberos database
     ```
 
-    kinitコマンドでkeytabを確認します。ハイライトされたフィールドをあなたの値に置き換えてください。
+    Check the keytab with kinit command. Replace the highlighted fields with your values:
 
     ```shell
     $ kinit -k -t KEY_TAB_PATH USERNAME
     ```
 
-    ユーザー名とkeytabの組み合わせが正しければ、上記のコマンドはエラーを表示せずに終了します。
+    If the username/keytab combination is correct, the command above should finish without printing any errors.
 
-    klistコマンドでレルムを確認します。
+    Check the realm using klist command:
 
     ```shell
     $ klist |grep "Default principal:"
     ```
 
-    このように表示されます。
+    You should see something like this:
 
     ```shell
     Default principal: johndoe@a_realm_name
     ```
 
-    印刷されたユーザー名とレルムが、統合構成の`sasl_gssapi_realm` }パラメーターと`sasl_gssapi_username`パラメーターと一致することを確認してください。
+    Check that the printed user name and realm match the `sasl_gssapi_realm` and `sasl_gssapi_username` parameters in the integration configuration.
   </Collapser>
 </CollapserGroup>
